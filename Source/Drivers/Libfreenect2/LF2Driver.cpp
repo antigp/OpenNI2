@@ -1,9 +1,11 @@
 #include "LF2Driver.h"
 #include "LF2Device.h"
 #include <libfreenect2/depth_packet_processor.h>
+#include <libfreenect2/frame_listener_impl.h>
 #include <libfreenect2/packet_pipeline.h>
+#include <libfreenect2/threading.h>
 #include <XnOS.h>
-
+#include <iostream>
 static const char VENDOR_VAL[] = "Microsoft";
 static const char NAME_VAL[] = "Kinect v2";
 
@@ -25,11 +27,13 @@ LF2Driver::deviceOpen(const char * uri, const char *)
     }
 
   DepthPacketProcessor::Config config;
-  DefaultPacketPipeline* packetPipeline = new DefaultPacketPipeline ();
+  OpenCLPacketPipeline* packetPipeline = new OpenCLPacketPipeline();
   config.MaxDepth = 10000;
-  packetPipeline->getDepthPacketProcessor()->setConfiguration(config);
+  //packetPipeline->getDepthPacketProcessor()->setConfiguration(config);
   f2dev = m_f2.openDevice (uri,packetPipeline);
-
+    
+    std::cout << "device serial: " << f2dev->getSerialNumber() << std::endl;
+    std::cout << "device firmware: " << f2dev->getFirmwareVersion() << std::endl;
   if (f2dev == 0)
     {
       getServices().errorLoggerAppend("Could not open \"%s\"", uri);
@@ -88,7 +92,7 @@ LF2Driver::initialize (DeviceConnectedCallback connectedCallback, DeviceDisconne
   // discover Kinects
   for (int t = 0; t < num_of_device; ++t)
     {
-      Freenect2Device* dev = m_f2.openDevice (t);
+      Freenect2Device* dev = m_f2.openDevice (t, new OpenCLPacketPipeline());
       OniDeviceInfo* pInfo = XN_NEW (OniDeviceInfo);
       std::string serial = dev->getSerialNumber ();
       
@@ -97,8 +101,10 @@ LF2Driver::initialize (DeviceConnectedCallback connectedCallback, DeviceDisconne
       xnOSStrCopy (pInfo->name, NAME_VAL,ONI_MAX_STR);
       deviceConnected (pInfo);
       deviceStateChanged (pInfo,false);
-      
-      dev->close ();      
+      libfreenect2::this_thread::sleep_for(libfreenect2::chrono::milliseconds(1000));
+      dev->stop();
+      dev->close ();
+      libfreenect2::this_thread::sleep_for(libfreenect2::chrono::milliseconds(1000));
     }
   return ONI_STATUS_OK;  
 }
