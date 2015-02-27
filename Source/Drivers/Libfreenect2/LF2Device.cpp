@@ -40,3 +40,22 @@ LF2Device::destroyStream (StreamBase* pStream)
   XN_DELETE (pStream);
 }
 
+OniBool LF2Device::isPropertySupported(int propertyId)
+{
+	return false;
+}
+
+OniBool LF2Device::isCommandSupported(int commandId)
+{
+	return ONI_STATUS_NOT_IMPLEMENTED;
+}
+
+OniStatus LF2Device::tryManualTrigger()
+{
+	return ONI_STATUS_NOT_IMPLEMENTED;
+}
+
+OniBool LF2Device::isImageRegistrationModeSupported(OniImageRegistrationMode mode)
+{
+	return (mode == ONI_IMAGE_REGISTRATION_DEPTH_TO_COLOR);
+}

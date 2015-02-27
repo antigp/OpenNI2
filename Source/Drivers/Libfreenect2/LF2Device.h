@@ -64,8 +64,13 @@ namespace LF2 {
 
     void
     destroyStream (oni::driver::StreamBase*);
+      virtual OniBool isPropertySupported(int propertyId);
+      virtual OniBool isCommandSupported(int commandId) ;
+      virtual OniStatus tryManualTrigger();
+      
+      virtual OniBool isImageRegistrationModeSupported(OniImageRegistrationMode mode);
   protected:
-    static const int m_numSensors = 3;
+    static const int m_numSensors = 1;
     OniSensorInfo m_sensors[m_numSensors];
     libfreenect2::Freenect2Device* m_f2dev;
     LF2Driver* m_driver;

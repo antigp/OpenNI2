@@ -1,4 +1,6 @@
 #include "LF2Stream.h"
+#include "Driver/OniDriverAPI.h"
+#include <iostream>
 
 using namespace LF2;
 using namespace oni::driver;
@@ -50,7 +52,8 @@ LF2Stream::getProperty(int propertyId, void* data, int* pDataSize)
           }
         else
           {
-            status = GetVideoMode((OniVideoMode*)data);            
+            status = GetVideoMode((OniVideoMode*)data);
+            std::cout << "video mode width: " <<  ((OniVideoMode*)data)->resolutionX << std::endl;
           }
         break;
       }

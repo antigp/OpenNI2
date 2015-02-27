@@ -7,13 +7,16 @@
 #include <XnOS.h>
 #include <iostream>
 static const char VENDOR_VAL[] = "Microsoft";
-static const char NAME_VAL[] = "Kinect v2";
+static const char NAME_VAL[] = "Kinect";
 
 using namespace LF2;
 using namespace oni::driver;
 using namespace libfreenect2;
 
 DeviceBase*
+
+
+
 LF2Driver::deviceOpen(const char * uri, const char *)
 {
   Freenect2Device * f2dev;  
